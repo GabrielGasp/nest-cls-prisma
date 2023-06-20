@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { ClsModule } from 'nestjs-cls';
 import { DatabaseModule } from './infra/database/database.module';
-import { AccountModule } from './infra/http/accounts/module';
+import { HttpModule } from './infra/http/http.module';
 
 @Module({
   imports: [
@@ -10,7 +10,7 @@ import { AccountModule } from './infra/http/accounts/module';
       middleware: { mount: true },
     }),
     DatabaseModule,
-    AccountModule,
+    HttpModule,
   ],
   controllers: [],
   providers: [],

@@ -1,11 +1,10 @@
 import {
-  BadRequestException,
   Injectable,
   NotFoundException,
   UnprocessableEntityException,
 } from '@nestjs/common';
-import { AccountRepository } from 'src/core/repositories/account.repository';
-import { TransactionManager } from 'src/core/repositories/transaction-manager';
+import { AccountRepository } from 'src/app/repositories/account.repository';
+import { TransactionManager } from 'src/app/repositories/transaction-manager';
 
 @Injectable()
 export class Transfer {

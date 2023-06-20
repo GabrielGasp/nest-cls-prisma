@@ -1,5 +1,5 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { AccountRepository } from 'src/core/repositories/account.repository';
+import { AccountRepository } from 'src/app/repositories/account.repository';
 import { PrismaClientManager } from '../prisma-client-manager';
 
 @Injectable()

@@ -7,14 +7,14 @@ import {
   Patch,
 } from '@nestjs/common';
 import { TransferDto } from './dtos/transfer.dto';
-import { AddBalance } from 'src/core/use-cases/account/add-balance.use-case';
+import { AddBalance } from 'src/app/use-cases/accounts/add-balance.use-case';
 import { AddBalanceDto } from './dtos/add-balance.dto';
-import { GetBalance } from 'src/core/use-cases/account/get-balance.use-case';
-import { SubtractBalance } from 'src/core/use-cases/account/subtract-blanace.use-case';
-import { Transfer } from 'src/core/use-cases/account/transfer.use-case';
+import { GetBalance } from 'src/app/use-cases/accounts/get-balance.use-case';
+import { SubtractBalance } from 'src/app/use-cases/accounts/subtract-blanace.use-case';
+import { Transfer } from 'src/app/use-cases/accounts/transfer.use-case';
 
 @Controller('accounts')
-export class AccountController {
+export class AccountsController {
   constructor(
     private getBalanceUseCase: GetBalance,
     private addBalanceUseCase: AddBalance,

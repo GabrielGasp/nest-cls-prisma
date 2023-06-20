@@ -1,9 +1,8 @@
 import { ClsService } from 'nestjs-cls';
 import { PrismaService } from './prisma.service';
-import { MyClsStore } from 'src/infra/cls/store';
-import { PRISMA_CLIENT_KEY } from 'src/infra/cls/keys';
-import { TransactionManager } from 'src/core/repositories/transaction-manager';
+import { TransactionManager } from 'src/app/repositories/transaction-manager';
 import { Injectable } from '@nestjs/common';
+import { PRISMA_TX_CLIENT_KEY, MyClsStore } from 'src/utils/cls';
 
 @Injectable()
 export class PrismaTransactionManager implements TransactionManager {
@@ -15,37 +14,28 @@ export class PrismaTransactionManager implements TransactionManager {
   /**
    * This method is used to run a callback inside a transaction.
    *
-   * If a transaction was already initiated, the callback will be executed inside said transaction.
+   * If this method is called recursively, all operations will share the same transaction.
    *
-   * @param fn  The callback that will be executed inside the transaction
+   * @param cb  The callback to be executed inside the transaction
    * @returns The return value of the callback
+   * @throws Any exception thrown by the callback. Rollback is handled by Prisma.
    */
-  async run<T>(fn: () => Promise<T>): Promise<T> {
-    // if the Transaction Client
-    if (this.cls.has(PRISMA_CLIENT_KEY)) {
-      // exists, there is no need to create a transaction and you just execute the callback
-      const result = await fn();
-      return result;
-    } else {
-      // does not exist, create a Prisma transaction
-      return this.prisma.$transaction(async (prisma) => {
-        // and save the Transaction Client inside the CLS namespace to be retrieved by the repositories
-        this.cls.set(PRISMA_CLIENT_KEY, prisma);
+  async run<T>(cb: () => Promise<T>): Promise<T> {
+    // Reuse the same Transaction Client if `run` is called inside an on-going transaction
+    if (this.cls.has(PRISMA_TX_CLIENT_KEY)) return cb();
 
-        try {
-          // execute the transaction callback
-          const result = await fn();
-
-          // unset the transaction client when everything goes well
-          this.cls.set(PRISMA_CLIENT_KEY, undefined);
-
-          return result;
-        } catch (err) {
-          // unset the transaction client when something goes wrong
-          this.cls.set(PRISMA_CLIENT_KEY, undefined);
-          throw err;
-        }
+    try {
+      // Create a Prisma transaction
+      // `return await` is necessary for the `finally` block to be executed only after the transaction finishes
+      return await this.prisma.$transaction((prisma) => {
+        // Save the Transaction Client inside the CLS store to be retrieved by the repositories
+        this.cls.set(PRISMA_TX_CLIENT_KEY, prisma);
+        // Execute the callback and return its value
+        return cb();
       });
+    } finally {
+      // Unset the Transaction Client from the CLS store after the transaction finishes (either by commit or rollback)
+      this.cls.set(PRISMA_TX_CLIENT_KEY, undefined);
     }
   }
 }

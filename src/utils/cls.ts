@@ -1,7 +1,8 @@
 import { ClsStore } from 'nestjs-cls';
-import { PRISMA_CLIENT_KEY } from './keys';
 import { Prisma } from '@prisma/client';
 
+export const PRISMA_TX_CLIENT_KEY = 'PRISMA_TX_CLIENT_KEY';
+
 export interface MyClsStore extends ClsStore {
-  [PRISMA_CLIENT_KEY]?: Prisma.TransactionClient;
+  [PRISMA_TX_CLIENT_KEY]?: Prisma.TransactionClient;
 }

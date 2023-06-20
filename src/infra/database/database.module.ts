@@ -1,9 +1,9 @@
 import { Global, Module } from '@nestjs/common';
 import { PrismaService } from './prisma/prisma.service';
-import { AccountRepository } from 'src/core/repositories/account.repository';
+import { AccountRepository } from 'src/app/repositories/account.repository';
 import { PrismaAccountRepository } from './prisma/repositories/prisma-account.repository';
 import { PrismaTransactionManager } from './prisma/prisma-transaction-manager.service';
-import { TransactionManager } from 'src/core/repositories/transaction-manager';
+import { TransactionManager } from 'src/app/repositories/transaction-manager';
 import { PrismaClientManager } from './prisma/prisma-client-manager';
 
 @Global()
