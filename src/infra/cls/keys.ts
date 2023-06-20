@@ -1,0 +1,1 @@
+export const PRISMA_CLIENT_KEY = 'PRISMA_CLIENT_KEY';

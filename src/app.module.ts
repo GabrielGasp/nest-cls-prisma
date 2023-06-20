@@ -1,10 +1,18 @@
 import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
+import { ClsModule } from 'nestjs-cls';
+import { DatabaseModule } from './infra/database/database.module';
+import { AccountModule } from './infra/http/accounts/module';
 
 @Module({
-  imports: [],
-  controllers: [AppController],
-  providers: [AppService],
+  imports: [
+    ClsModule.forRoot({
+      global: true,
+      middleware: { mount: true },
+    }),
+    DatabaseModule,
+    AccountModule,
+  ],
+  controllers: [],
+  providers: [],
 })
 export class AppModule {}
